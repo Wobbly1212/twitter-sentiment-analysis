@@ -1,86 +1,92 @@
-# 🐦 Sentiment Analysis on Twitter Data using Apache Spark
+# Sentiment Analysis on Twitter Data Using Apache Spark
 
-This project performs large-scale **sentiment analysis** on tweets using **Apache Spark** and the **Sentiment140** dataset, implemented and run in **Databricks** ,under the supervision of **Professor Giancarlo Sperli**.
+Large-scale **sentiment analysis** on 1.6 million tweets using **Apache Spark** and the **Sentiment140** dataset, implemented in **Databricks** under the supervision of **Professor Giancarlo Sperli**.
 
----
+## Project Summary
 
-## 📚 Project Summary
+People express their emotions daily through tweets — short, rich snippets of opinion. This project explores how big data tools can automatically classify tweets as **positive** or **negative** using machine learning.
 
-People express their emotions daily through tweets — short, rich snippets of opinion. This project explores how we can use big data tools to automatically classify those tweets as **positive** or **negative** using machine learning.
-
-We trained and evaluated two machine learning models:
-- Logistic Regression  
-- Naive Bayes  
+Two models were trained and evaluated:
+- **Logistic Regression**
+- **Naive Bayes**
 
 Both were implemented with **Spark MLlib** on a dataset of **1.6 million tweets** using Databricks for scalable computation.
 
----
+## Results
 
-## 🔍 Dataset
+| Metric | Logistic Regression | Naive Bayes |
+|--------|---------------------|-------------|
+| Accuracy | 0.7796 | 0.7637 |
+| F1 Score | 0.7795 | 0.7637 |
+| Precision | 0.7797 | 0.7638 |
+| Recall | 0.7796 | 0.7637 |
 
-**Sentiment140 Dataset**  
-- 1.6 million labeled tweets  
-- Balanced: 800,000 positive, 800,000 negative  
-- Fields used: `text`, `target (label)`  
-- Labels:  
-  - `0` = Negative  
-  - `4` = Positive → Converted to `1` for binary classification
+**Logistic Regression** outperformed across all metrics, while **Naive Bayes** was faster to train.
 
----
+## Dataset
 
-## 🧼 Preprocessing Pipeline
+**[Sentiment140](http://help.sentiment140.com/for-students)**
+- 1.6 million labeled tweets (balanced: 800K positive, 800K negative)
+- Labels: `0` = Negative, `4` = Positive (converted to `1`)
+- Fields used: `text`, `target`
+
+## Preprocessing Pipeline
 
 Implemented in PySpark:
-- Lowercasing all text
-- Removing URLs, mentions, hashtags, punctuation
-- Trimming extra whitespace
-- Tokenization (word splitting)
-- Stopword removal
-- **TF-IDF vectorization**
 
----
+1. Lowercasing all text
+2. Removing URLs, mentions, hashtags, punctuation
+3. Trimming extra whitespace
+4. Tokenization
+5. Stopword removal
+6. **TF-IDF vectorization**
 
-## 🧠 Model Training
+## Getting Started
 
-Split:  
-- Training: 80% (1,280,209 tweets)  
-- Testing: 20% (319,791 tweets)
+### Prerequisites
 
-### ✅ Logistic Regression
-- Accuracy: **0.7796**
-- F1 Score: **0.7795**
+- Python 3.10+
+- Apache Spark 3.4+ or a [Databricks](https://databricks.com/) account
 
-### ✅ Naive Bayes
-- Accuracy: **0.7637**
-- F1 Score: **0.7637**
-
----
-
-## 📊 Model Comparison
-
-| Metric     | Logistic Regression | Naive Bayes |
-|------------|---------------------|-------------|
-| Accuracy   | 0.7796              | 0.7637      |
-| F1 Score   | 0.7795              | 0.7637      |
-| Precision  | 0.7797              | 0.7638      |
-| Recall     | 0.7796              | 0.7637      |
-
-📌 **Logistic Regression** showed better performance across all metrics, while **Naive Bayes** was faster and simpler to train.
-
----
-
-## 💻 Tools and Frameworks
-
-- [Apache Spark](https://spark.apache.org/)
-- [Databricks](https://databricks.com/)
-- PySpark (Spark SQL, MLlib)
-- TF-IDF (Term Frequency–Inverse Document Frequency)
-
----
-
-## 📁 Project Structure
+### Installation
 
 ```bash
-├── Sentiment140_Spark.html         # Exported Databricks notebook (HTML)
-├── Report.pdf                      # Full written report for academic submission
-├── README.md                       # This file
+git clone https://github.com/Wobbly1212/twitter-sentiment-analysis.git
+cd twitter-sentiment-analysis
+pip install -r requirements.txt
+```
+
+### Running
+
+The analysis was originally run on Databricks. The exported notebook is available in `docs/`:
+- `Sentiment140_Spark.html` — Full Databricks notebook export
+- `Report.pdf` — Academic report with methodology and analysis
+
+To run locally, you'll need a Spark environment configured.
+
+## Project Structure
+
+```
+twitter-sentiment-analysis/
+├── docs/
+│   ├── Sentiment140_Spark.html   # Exported Databricks notebook
+│   └── Report.pdf                # Academic report
+├── requirements.txt
+├── LICENSE
+└── README.md
+```
+
+## Tools & Frameworks
+
+- [Apache Spark](https://spark.apache.org/) / PySpark
+- [Databricks](https://databricks.com/)
+- Spark MLlib (Logistic Regression, Naive Bayes)
+- TF-IDF (Term Frequency-Inverse Document Frequency)
+
+## Author
+
+Developed by **Diako Darabi** as part of the Data Science Master's Program.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
