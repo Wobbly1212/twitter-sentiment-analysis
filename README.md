@@ -56,21 +56,40 @@ cd twitter-sentiment-analysis
 pip install -r requirements.txt
 ```
 
-### Running
+The pipeline ships as runnable code in two forms:
 
-The analysis was originally run on Databricks. The exported notebook is available in `docs/`:
-- `Sentiment140_Spark.html` — Full Databricks notebook export
-- `Report.pdf` — Academic report with methodology and analysis
+| File | Use it when |
+|------|-------------|
+| [`notebooks/sentiment140_spark.ipynb`](notebooks/sentiment140_spark.ipynb) | You want the full annotated analysis (EDA, plots, both models). Assumes a Databricks workspace where `spark` is pre-defined and the CSV is on DBFS. |
+| [`src/sentiment_pipeline.py`](src/sentiment_pipeline.py) | You want to run it anywhere. Creates its own `SparkSession`, parameterized via CLI flags. |
 
-To run locally, you'll need a Spark environment configured.
+**On Databricks:** import `notebooks/sentiment140_spark.ipynb`, upload the Sentiment140 CSV to DBFS, and run all cells.
+
+**Standalone with `spark-submit`:**
+
+```bash
+pip install -r requirements.txt
+# full dataset
+spark-submit src/sentiment_pipeline.py --input training.1600000.processed.noemoticon.csv
+# quick local smoke test on a 0.1% sample
+spark-submit src/sentiment_pipeline.py --input training.1600000.processed.noemoticon.csv --sample 0.001
+```
+
+The script loads the data, cleans the text, builds TF-IDF features, trains both Logistic Regression and Naive Bayes, and prints accuracy / F1 / precision / recall for each.
+
+> The notebook and report (`docs/`) are the original Databricks deliverables; the `notebooks/` and `src/` code is reconstructed faithfully from the exported notebook so the project is runnable outside Databricks.
 
 ## Project Structure
 
 ```
 twitter-sentiment-analysis/
+├── notebooks/
+│   └── sentiment140_spark.ipynb  # annotated analysis (Databricks)
+├── src/
+│   └── sentiment_pipeline.py     # standalone, spark-submit-able pipeline
 ├── docs/
-│   ├── Sentiment140_Spark.html   # Exported Databricks notebook
-│   └── Report.pdf                # Academic report
+│   ├── Sentiment140_Spark.html   # original exported Databricks notebook
+│   └── Report.pdf                # academic report
 ├── requirements.txt
 ├── LICENSE
 └── README.md
