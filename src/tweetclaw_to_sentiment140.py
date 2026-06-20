@@ -33,22 +33,30 @@ def normalize_target(value):
 
 
 def read_json_records(path):
-    text = path.read_text(encoding="utf-8").strip()
+    text = path.read_text(encoding="utf-8-sig").strip()
     if not text:
-        return []
+        return
     if text.startswith("["):
         data = json.loads(text)
-        return data if isinstance(data, list) else [data]
-    return [json.loads(line) for line in text.splitlines() if line.strip()]
+        if isinstance(data, list):
+            yield from data
+        else:
+            yield data
+        return
+    for line in text.splitlines():
+        if line.strip():
+            yield json.loads(line)
 
 
 def read_records(path):
     suffix = path.suffix.lower()
     if suffix == ".csv":
         with path.open(newline="", encoding="utf-8-sig") as handle:
-            return list(csv.DictReader(handle))
+            yield from csv.DictReader(handle)
+        return
     if suffix in {".json", ".jsonl", ".ndjson"}:
-        return read_json_records(path)
+        yield from read_json_records(path)
+        return
     raise ValueError(f"Unsupported input extension: {path.suffix}")
 
 
@@ -75,6 +83,7 @@ def convert_records(records, default_query="NO_QUERY"):
 
 
 def write_sentiment140(rows, output_path):
+    output_path.parent.mkdir(parents=True, exist_ok=True)
     with output_path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.writer(handle)
         writer.writerows(rows)
