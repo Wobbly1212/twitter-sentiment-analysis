@@ -77,6 +77,22 @@ spark-submit src/sentiment_pipeline.py --input training.1600000.processed.noemot
 
 The script loads the data, cleans the text, builds TF-IDF features, trains both Logistic Regression and Naive Bayes, and prints accuracy / F1 / precision / recall for each.
 
+### Import labeled TweetClaw exports
+
+If you have a reviewed TweetClaw export with human sentiment labels, convert it
+to the same 6-column Sentiment140 CSV shape before running the Spark pipeline:
+
+```bash
+python src/tweetclaw_to_sentiment140.py tweetclaw-labeled.jsonl tweetclaw-sentiment140.csv
+spark-submit src/sentiment_pipeline.py --input tweetclaw-sentiment140.csv
+```
+
+The converter accepts JSON, JSONL, NDJSON, and CSV exports. It maps positive
+labels to `4`, negative labels to `0`, preserves tweet IDs, dates, usernames,
+and text when present, and skips neutral, unlabeled, or empty rows. Keep labels
+human-reviewed before training because the Spark pipeline is a binary
+positive/negative classifier.
+
 > The notebook and report (`docs/`) are the original Databricks deliverables; the `notebooks/` and `src/` code is reconstructed faithfully from the exported notebook so the project is runnable outside Databricks.
 
 ## Project Structure
@@ -86,7 +102,8 @@ twitter-sentiment-analysis/
 ├── notebooks/
 │   └── sentiment140_spark.ipynb  # annotated analysis (Databricks)
 ├── src/
-│   └── sentiment_pipeline.py     # standalone, spark-submit-able pipeline
+│   ├── sentiment_pipeline.py     # standalone, spark-submit-able pipeline
+│   └── tweetclaw_to_sentiment140.py # labeled TweetClaw export converter
 ├── docs/
 │   ├── Sentiment140_Spark.html   # original exported Databricks notebook
 │   └── Report.pdf                # academic report
